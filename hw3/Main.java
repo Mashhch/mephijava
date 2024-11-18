@@ -45,7 +45,7 @@ abstract class Transport implements Drivable{
     }
 }
 
-final class Car extends TransportVehicle implements Drivable {
+final class Car extends Transport implements Drivable {
     public Car(String name, String engineType) {
         super(name, engineType);
     }
@@ -61,7 +61,7 @@ final class Car extends TransportVehicle implements Drivable {
     }
 }
 
-final class Plane extends TransportVehicle {
+final class Plane extends Transport {
     public Plane(String name, String engineType) {
         super(name, engineType);
     }
@@ -70,9 +70,14 @@ final class Plane extends TransportVehicle {
     public void displayInfo() {
         System.out.println("Plane: " + name + ", Engine: " + getEngineType());
     }
+
+    @Override
+    public void drive() {
+        //
+    }
 }
 
-final class Ship extends TransportVehicle {
+final class Ship extends Transport {
     public Ship(String name, String engineType) {
         super(name, engineType);
     }
@@ -81,31 +86,97 @@ final class Ship extends TransportVehicle {
     public void displayInfo() {
         System.out.println("Ship: " + name + ", Engine: " + getEngineType());
     }
+
+    @Override
+    public void drive() {
+
+    }
 }
 
-final class Bicycle extends TransportVehicle {
+final class Bicycle extends Transport {
     public Bicycle(String name, String engineType) {
-        super(name, "NONE");
+        super(name, engineType);
     }
 
     @Override
     public void displayInfo() {
         System.out.println("Bicycle: " + name + ", Engine: " + getEngineType());
     }
+
+    @Override
+    public void drive() {
+
+    }
 }
+
+sealed abstract class LuxuryTransport extends Transport permits Limousine, Yacht, PrivateJet {
+
+    public LuxuryTransport(String name, String engineType) {
+        super(name, engineType);
+    }
+
+    @Override
+    public void drive() {
+        System.out.println("Поездка с комфортом.");
+    }
+}
+
+final class Limousine extends LuxuryTransport {
+    public Limousine(String name, String engineType) {
+        super(name, engineType);
+    }
+
+    @Override
+    public void displayInfo() {
+        System.out.println("Limousine: " + name + ", Engine: " + getEngineType());
+    }
+}
+
+final class Yacht extends LuxuryTransport {
+    public Yacht(String name, String engineType) {
+        super(name, engineType);
+    }
+
+    @Override
+    public void displayInfo() {
+        System.out.println("Yacht: " + name + ", Engine: " + getEngineType());
+    }
+}
+
+final class PrivateJet extends LuxuryTransport {
+    public PrivateJet(String name, String engineType) {
+        super(name, engineType);
+    }
+
+    @Override
+    public void displayInfo() {
+        System.out.println("Private Jet: " + name + ", Engine: " + getEngineType());
+    }
+}
+
 
 public class Main {
     public static void main(String[] args) {
-        TransportVehicle car = new Car("Car", "ELECTRIC");
+        Transport car = new Car("Car", "ELECTRIC");
         car.displayInfo();
 
-        TransportVehicle plane = new Plane("Plane", "ELECTRIC");
+        Transport plane = new Plane("Plane", "ELECTRIC");
         plane.displayInfo();
 
-        TransportVehicle ship = new Ship("Ship", "CASUAL");
+        Transport ship = new Ship("Ship", "CASUAL");
         ship.displayInfo();
 
-        TransportVehicle bicycle = new Bicycle("Bicycle", "NONE");
+        Transport bicycle = new Bicycle("Bicycle", "NONE");
         bicycle.displayInfo();
+
+        Transport limousine = new Limousine("Limousine", "CASUAL");
+        limousine.displayInfo();
+
+        Transport yacht = new Yacht("Yacht", "CASUAL");
+        yacht.displayInfo();
+
+        Transport privateJet = new PrivateJet("Private Jet", "CASUAL");
+        privateJet.displayInfo();
     }
+
 }

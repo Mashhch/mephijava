@@ -4,21 +4,21 @@ import java.util.Random;
 
 public class Vector {
     private final double x, y, z;
-    
+
     public Vector(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
-    
+
     public double length() {
         return Math.sqrt(x * x + y * y + z * z);
     }
-    
+
     public double dotProduct(Vector vec) {
         return this.x * vec.x + this.y * vec.y + this.z * vec.z;
     }
-    
+
     public Vector crossProduct(Vector vec) {
         double crossX = this.y * vec.z - this.z * vec.y;
         double crossY = this.z * vec.x - this.x * vec.z;
