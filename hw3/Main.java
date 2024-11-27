@@ -4,21 +4,21 @@ interface Drivable {
     void drive();
 }
 
-abstract class Transport implements Drivable{
+abstract class Transport implements Drivable {
     protected String name;
     protected Engine engine;
 
-    public Transport(String name, String engineType) {
+    protected Transport(String name, String engineType) {
         this.name = name;
-        this.engine = createEngine(engineType);
-    }
-
-    protected enum EngineType {
-        CASUAL, ELECTRIC, NONE
+        this.engine = Engine.createEngine(engineType);
     }
 
     protected static class Engine {
         protected EngineType engineType;
+
+        protected enum EngineType {
+            CASUAL, ELECTRIC, NONE
+        }
 
         public Engine(EngineType engineType) {
             this.engineType = engineType;
@@ -27,21 +27,21 @@ abstract class Transport implements Drivable{
         public EngineType getEngineType() {
             return engineType;
         }
-    }
 
-    protected Engine createEngine(String engineType) {
-        return switch (engineType.toUpperCase()) {
-            case "ELECTRIC" -> new Engine(EngineType.ELECTRIC);
-            case "CASUAL" -> new Engine(EngineType.CASUAL);
-            case "NONE" -> new Engine(EngineType.NONE);
-            default -> throw new IllegalArgumentException("Unknown engine type: " + engineType);
-        };
+        protected static Engine createEngine(String engineType) {
+            return switch (engineType.toUpperCase()) {
+                case "ELECTRIC" -> new Engine(EngineType.ELECTRIC);
+                case "CASUAL" -> new Engine(EngineType.CASUAL);
+                case "NONE" -> new Engine(EngineType.NONE);
+                default -> throw new IllegalArgumentException("Unknown engine type: " + engineType);
+            };
+        }
     }
 
     public abstract void displayInfo();
 
-    public EngineType getEngineType() {
-        return this.engine.engineType;
+    public Engine.EngineType getEngineType() {
+        return this.engine.getEngineType();
     }
 }
 
@@ -73,7 +73,7 @@ final class Plane extends Transport {
 
     @Override
     public void drive() {
-        //
+        System.out.println(name + " is driving.");
     }
 }
 
@@ -89,7 +89,7 @@ final class Ship extends Transport {
 
     @Override
     public void drive() {
-
+        System.out.println(name + " is driving.");
     }
 }
 
@@ -105,7 +105,7 @@ final class Bicycle extends Transport {
 
     @Override
     public void drive() {
-
+        System.out.println(name + " is driving.");
     }
 }
 
@@ -153,7 +153,6 @@ final class PrivateJet extends LuxuryTransport {
         System.out.println("Private Jet: " + name + ", Engine: " + getEngineType());
     }
 }
-
 
 public class Main {
     public static void main(String[] args) {
