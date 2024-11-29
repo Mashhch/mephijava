@@ -1,5 +1,10 @@
 package hw3;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static hw3.Transport.Engine.registerEngineFactory;
+
 interface Drivable {
     void drive();
 }
@@ -13,36 +18,51 @@ abstract class Transport implements Drivable {
         this.engine = Engine.createEngine(engineType);
     }
 
+    protected interface EngineFactory {
+        Engine create();
+    }
+
+    protected static EngineFactory createEngineFactory(String engineType) {
+        return () -> {
+            Engine engine = new Engine();
+            engine.engineType = engineType;
+            return engine;
+        };
+    }
+
     protected static class Engine {
-        protected EngineType engineType;
+        protected String engineType;
 
-        protected enum EngineType {
-            CASUAL, ELECTRIC, NONE
-        }
+        private static final Map<String, EngineFactory> engineFactories = new HashMap<>();
 
-        public Engine(EngineType engineType) {
-            this.engineType = engineType;
-        }
 
-        public EngineType getEngineType() {
+        public String getEngineType() {
             return engineType;
         }
 
+        public static void registerEngineFactory(String engineType, EngineFactory factory) {
+            engineFactories.put(engineType.toUpperCase(), factory);
+        }
+
+        public static void unregisterEngineFactory(String engineType) {
+            engineFactories.remove(engineType.toUpperCase());
+        }
+
+        public static boolean isEngineTypeRegistered(String engineType) {
+            return engineFactories.containsKey(engineType.toUpperCase());
+        }
+
         protected static Engine createEngine(String engineType) {
-            return switch (engineType.toUpperCase()) {
-                case "ELECTRIC" -> new Engine(EngineType.ELECTRIC);
-                case "CASUAL" -> new Engine(EngineType.CASUAL);
-                case "NONE" -> new Engine(EngineType.NONE);
-                default -> throw new IllegalArgumentException("Unknown engine type: " + engineType);
-            };
+            EngineFactory factory = engineFactories.get(engineType.toUpperCase());
+            if (factory == null) {
+                throw new IllegalArgumentException("Unknown engine type: " + engineType);
+            }
+            return factory.create();
         }
     }
 
     public abstract void displayInfo();
 
-    public Engine.EngineType getEngineType() {
-        return this.engine.getEngineType();
-    }
 }
 
 final class Car extends Transport implements Drivable {
@@ -57,7 +77,7 @@ final class Car extends Transport implements Drivable {
 
     @Override
     public void displayInfo() {
-        System.out.println("Car: " + name + ", Engine: " + getEngineType());
+        System.out.println("Car: " + name + ", Engine: " + engine.getEngineType());
     }
 }
 
@@ -68,7 +88,7 @@ final class Plane extends Transport {
 
     @Override
     public void displayInfo() {
-        System.out.println("Plane: " + name + ", Engine: " + getEngineType());
+        System.out.println("Plane: " + name + ", Engine: " + engine.getEngineType());
     }
 
     @Override
@@ -84,7 +104,7 @@ final class Ship extends Transport {
 
     @Override
     public void displayInfo() {
-        System.out.println("Ship: " + name + ", Engine: " + getEngineType());
+        System.out.println("Ship: " + name + ", Engine: " + engine.getEngineType());
     }
 
     @Override
@@ -100,7 +120,7 @@ final class Bicycle extends Transport {
 
     @Override
     public void displayInfo() {
-        System.out.println("Bicycle: " + name + ", Engine: " + getEngineType());
+        System.out.println("Bicycle: " + name + ", Engine: " + engine.getEngineType());
     }
 
     @Override
@@ -128,7 +148,7 @@ final class Limousine extends LuxuryTransport {
 
     @Override
     public void displayInfo() {
-        System.out.println("Limousine: " + name + ", Engine: " + getEngineType());
+        System.out.println("Limousine: " + name + ", Engine: " + engine.getEngineType());
     }
 }
 
@@ -139,7 +159,7 @@ final class Yacht extends LuxuryTransport {
 
     @Override
     public void displayInfo() {
-        System.out.println("Yacht: " + name + ", Engine: " + getEngineType());
+        System.out.println("Yacht: " + name + ", Engine: " + engine.getEngineType());
     }
 }
 
@@ -150,12 +170,18 @@ final class PrivateJet extends LuxuryTransport {
 
     @Override
     public void displayInfo() {
-        System.out.println("Private Jet: " + name + ", Engine: " + getEngineType());
+        System.out.println("Private Jet: " + name + ", Engine: " + engine.getEngineType());
     }
 }
 
 public class Main {
     public static void main(String[] args) {
+
+        Transport.Engine.registerEngineFactory("CASUAL", Transport.createEngineFactory("CASUAL"));
+        Transport.Engine.registerEngineFactory("ELECTRIC", Transport.createEngineFactory("ELECTRIC"));
+        Transport.Engine.registerEngineFactory("HYBRID", Transport.createEngineFactory("HYBRID"));
+        Transport.Engine.registerEngineFactory("NONE", Transport.createEngineFactory("NONE"));
+
         Transport car = new Car("Car", "ELECTRIC");
         car.displayInfo();
 
@@ -168,13 +194,13 @@ public class Main {
         Transport bicycle = new Bicycle("Bicycle", "NONE");
         bicycle.displayInfo();
 
-        Transport limousine = new Limousine("Limousine", "CASUAL");
+        Transport limousine = new Limousine("Limousine", "HYBRID");
         limousine.displayInfo();
 
         Transport yacht = new Yacht("Yacht", "CASUAL");
         yacht.displayInfo();
 
-        Transport privateJet = new PrivateJet("Private Jet", "CASUAL");
+        Transport privateJet = new PrivateJet("Private Jet", "HYBRID");
         privateJet.displayInfo();
     }
 
