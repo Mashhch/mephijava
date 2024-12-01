@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class RadixSort {
 
-    public static int[] sort(int[] numbers) {
+    public static Integer[] sort(Integer[] numbers) {
         int maximumNumber = findMaximumNumberIn(numbers);
 
         int numberOfDigits = calculateNumberOfDigitsIn(maximumNumber);
@@ -19,7 +19,7 @@ public class RadixSort {
         return numbers;
     }
 
-    public static int[] sortDescending (int[] numbers) {
+    public static Integer[] sortDescending (Integer[] numbers) {
         int maximumNumber = findMaximumNumberIn(numbers);
 
         int numberOfDigits = calculateNumberOfDigitsIn(maximumNumber);
@@ -34,12 +34,12 @@ public class RadixSort {
         return numbers;
     }
 
-    private static void applyCountingSortOn(int[] numbers, int placeValue) {
+    private static void applyCountingSortOn(Integer[] numbers, int placeValue) {
         int range = 10; // radix or the base
 
         int length = numbers.length;
         int[] frequency = new int[range];
-        int[] sortedValues = new int[length];
+        Integer[] sortedValues = new Integer[length];
 
         for (int number : numbers) {
             int digit = (number / placeValue) % range;
@@ -59,12 +59,12 @@ public class RadixSort {
         System.arraycopy(sortedValues, 0, numbers, 0, length);
     }
 
-    private static void applyCountingSortOnDescending (int[] numbers, int placeValue) {
+    private static void applyCountingSortOnDescending (Integer[] numbers, int placeValue) {
         int range = 10; // radix or the base
 
         int length = numbers.length;
         int[] frequency = new int[range];
-        int[] sortedValues = new int[length];
+        Integer[] sortedValues = new Integer[length];
 
         for (int number : numbers) {
             int digit = (number / placeValue) % range;
@@ -88,8 +88,10 @@ public class RadixSort {
         return (int) Math.log10(number) + 1; // valid only if number > 0
     }
 
-    private static int findMaximumNumberIn(int[] arr) {
-        return Arrays.stream(arr).max().getAsInt();
+    private static int findMaximumNumberIn(Integer[] arr) {
+        return Arrays.stream(arr)
+                .max(Integer::compareTo)
+                .orElseThrow(() -> new IllegalArgumentException("Array is empty."));
     }
 
 //    public static void main(String[] args) {

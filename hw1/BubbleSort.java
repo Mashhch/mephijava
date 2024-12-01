@@ -2,7 +2,7 @@ package hw1;
 
 public class BubbleSort {
 
-    static void BubbleSort(double[] arr) {
+    static void BubbleSort(Double[] arr) {
         int i = 0, n = arr.length;
 
         boolean swapNeeded = true;
@@ -23,7 +23,7 @@ public class BubbleSort {
         }
     }
 
-    static void BubbleSortDescending(double[] arr) {
+    static void BubbleSortDescending(Double[] arr) {
         int i = 0, n = arr.length;
 
         boolean swapNeeded = true;

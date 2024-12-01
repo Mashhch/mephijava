@@ -88,18 +88,26 @@ class StringBuilderObservable implements Observable {
 
 class Main {
     public static void main(String[] args) {
-        StringBuilderObservable builder1 = new StringBuilderObservable("first");
-        StringBuilderObservable builder2 = new StringBuilderObservable("second");
 
-        StringBuilderObserver observer1 = new StringBuilderObserver("Fedor", builder1);
-        StringBuilderObserver observer2 = new StringBuilderObserver("Nikolya");
-        builder2.registerObserver(observer1);
-        builder1.registerObserver(observer2);
-        builder1.append("1234567");
-        builder2.append("89101112");
-        builder1.delete(5, 6);
-        builder1.removeObserver(observer1);
-        builder1.insert(5, " 55555");
+        try {
+            StringBuilderObservable builder1 = new StringBuilderObservable("first");
+            StringBuilderObservable builder2 = new StringBuilderObservable("second");
+
+            StringBuilderObserver observer1 = new StringBuilderObserver("Fedor", builder1);
+            StringBuilderObserver observer2 = new StringBuilderObserver("Nikolya");
+            builder2.registerObserver(observer1);
+            builder1.registerObserver(observer2);
+            builder1.append("1234567");
+            builder2.append("89101112");
+            builder1.delete(100, 6);
+            builder1.removeObserver(observer1);
+            builder1.insert(5, " 55555");
+        } catch (StringIndexOutOfBoundsException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 
