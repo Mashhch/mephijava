@@ -3,8 +3,6 @@ package hw3;
 import java.util.HashMap;
 import java.util.Map;
 
-import static hw3.Transport.Engine.registerEngineFactory;
-
 interface Drivable {
     void drive();
 }
@@ -13,13 +11,13 @@ abstract class Transport implements Drivable {
     protected String name;
     protected Engine engine;
 
-    protected Transport(String name, String engineType) {
+    protected Transport(String name, String engineType) throws IllegalArgumentException {
         this.name = name;
         this.engine = Engine.createEngine(engineType);
     }
 
     protected interface EngineFactory {
-        Engine create();
+        Engine create() throws IllegalArgumentException;
     }
 
     protected static EngineFactory createEngineFactory(String engineType) {
@@ -52,7 +50,7 @@ abstract class Transport implements Drivable {
             return engineFactories.containsKey(engineType.toUpperCase());
         }
 
-        protected static Engine createEngine(String engineType) {
+        protected static Engine createEngine(String engineType) throws IllegalArgumentException {
             EngineFactory factory = engineFactories.get(engineType.toUpperCase());
             if (factory == null) {
                 throw new IllegalArgumentException("Unknown engine type: " + engineType);
@@ -182,26 +180,30 @@ public class Main {
         Transport.Engine.registerEngineFactory("HYBRID", Transport.createEngineFactory("HYBRID"));
         Transport.Engine.registerEngineFactory("NONE", Transport.createEngineFactory("NONE"));
 
-        Transport car = new Car("Car", "ELECTRIC");
-        car.displayInfo();
+        try {
+            Transport car = new Car("Car", "ELECTRIC");
+            car.displayInfo();
 
-        Transport plane = new Plane("Plane", "ELECTRIC");
-        plane.displayInfo();
+            Transport plane = new Plane("Plane", "ELECTRIC");
+            plane.displayInfo();
 
-        Transport ship = new Ship("Ship", "CASUAL");
-        ship.displayInfo();
+            Transport ship = new Ship("Ship", "CASUAL");
+            ship.displayInfo();
 
-        Transport bicycle = new Bicycle("Bicycle", "NONE");
-        bicycle.displayInfo();
+            Transport bicycle = new Bicycle("Bicycle", "NONE");
+            bicycle.displayInfo();
 
-        Transport limousine = new Limousine("Limousine", "HYBRID");
-        limousine.displayInfo();
+            Transport limousine = new Limousine("Limousine", "HYBRID");
+            limousine.displayInfo();
 
-        Transport yacht = new Yacht("Yacht", "CASUAL");
-        yacht.displayInfo();
+            Transport yacht = new Yacht("Yacht", "CASUAL");
+            yacht.displayInfo();
 
-        Transport privateJet = new PrivateJet("Private Jet", "HYBRID");
-        privateJet.displayInfo();
+            Transport privateJet = new PrivateJet("Private Jet", "HYBRID");
+            privateJet.displayInfo();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 }
